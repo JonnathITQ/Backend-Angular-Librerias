@@ -13,7 +13,7 @@ mongoose.promise= global.Promise;
 var app = require('./app');
 
 //5) Conexión con la BDD
-mongoose.connect('mongodb+srv://adriel:<adriel>@cluster0.nh8ttsh.mongodb.net/').then(()=>{ // mongoose.connect = método que se encarga de conectarse a la base de datos
+mongoose.connect('mongodb://localhost:27017/EntreLetras').then(()=>{ // mongoose.connect = método que se encarga de conectarse a la base de datos
     console.log('Conexión encontrada, procesando...');
 
     app.listen(port,()=>{ // app.listen = método que se encarga de escuchar las peticiones que vienen del cliente
