@@ -9,4 +9,17 @@ var port= '3600';
 //las promesas en js son objetos que representan la eventual finalización (o falla) de una operación asíncrona y sus valores resultantes.
 mongoose.promise= global.Promise;
 
+//4) Creamos esta variable para importar el archivo app.js donde se encuentra la configuración del servidor
 var app = require('./app');
+
+//5) Conexión con la BDD
+mongoose.connect('mongodb+srv://adriel:<adriel>@cluster0.nh8ttsh.mongodb.net/').then(()=>{ // mongoose.connect = método que se encarga de conectarse a la base de datos
+    console.log('Conexión encontrada, procesando...');
+
+    app.listen(port,()=>{ // app.listen = método que se encarga de escuchar las peticiones que vienen del cliente
+        console.log('La conexión fue establecida exitosamente :)');
+    })
+})
+.catch(err=>console.log(err)); // .catch = método que se encarga de capturar los errores que puedan ocurrir en la conexión con la base de datos
+
+
