@@ -9,7 +9,9 @@ var LibrosSchema = Schema({
     portada: String,
     anio_publicacion: Number,
     idioma: String,
-    cantidad_disponible: Number
+    cantidad_disponible: Number,
+    autor: String,
+    ubicacion: String
 });
 
 module.exports = mongoose.model('Libros', LibrosSchema);
