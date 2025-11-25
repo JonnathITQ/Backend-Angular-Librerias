@@ -1,39 +1,38 @@
 'use strict'
 
 var express = require('express');
-var LibrosController = require('../controller/libros')
+var LibrosController = require('../Controller/librosController');
 
 var enrutador = express.Router();
 
 var multipart = require('connect-multiparty');
-const { route } = require('../app');
 var multiPartMiddleware = multipart({ uploadDir: './uploads' });
 
 //Endpoints
 
 //Inicio
-enrutador.get('/home', LibrosController.home);
+enrutador.get('/test', LibrosController.test);
 
 //Guardar la información del libro
-enrutador.post('/guardar-libros', LibrosController.guardarLibro);
+enrutador.post('/guardar-libros', LibrosController.guardarLibros);
 
 //Ver todos los libros
 enrutador.get('/libros', LibrosController.verLibros);
 
 //Ver un libro en específico
-enrutador.get('/libros/:id', LibrosController.verLibros);
+enrutador.get('/libros/:id', LibrosController.verLibro);
 
 //Eliminar libro
-enrutador.delete('/libros/:id', LibrosController.borrarLibro);
+enrutador.delete('/libros/:id', LibrosController.borrarLibros);
 
 //Actualizar información del libro
-enrutador.put('/libros/:id'.LibrosController.actualizarLibro);
+enrutador.put('/libros/:id', LibrosController.actualizarLibros);
 
 //Agregar imagen
-enrutador.post('/subir-imagen/:id'.multiPartMiddleware, LibrosController.cargarImagen);
+enrutador.post('/subir-portada/:id', multiPartMiddleware, LibrosController.cargarPortada);
 
 //Cargar las imagenes
-enrutador.get('/tener-imagen/:imagen', LibrosController.tenerImagen);
+enrutador.get('/tener-portada/:portada', LibrosController.tenerPortada);
 
 module.exports = enrutador;
 

@@ -8,7 +8,6 @@ var UsuariosSchema= Schema({
     cedula : String,
     correo : String,
     contrasenia: String,
-    rol : String
 });
 
 module.exports = mongoose.model('Usuarios' , UsuariosSchema)
