@@ -11,6 +11,7 @@ var EmpleadoSchema = Schema({
     correo: String,
     contrasenia: String,
     rol: String,
+    imagen: String
 });
 
 module.exports= mongoose.model('Empleados', EmpleadoSchema)

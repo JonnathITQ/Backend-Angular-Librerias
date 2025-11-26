@@ -23,15 +23,15 @@ enrutador.get('/empleados/:id', EmpleadoController.verEmpleado);
 enrutador.post('/guardar-empleado', EmpleadoController.guardarEmpleados);
 
 //Actualizar un empleado
-enrutador.put('/empleados/:id', EmpleadoController.actualizarEmpleado);
+enrutador.put('/empleados/:id', EmpleadoController.actualizarEmpleados);
 
 //Borrar un empleado
 enrutador.delete('/empleados/:id', EmpleadoController.deleteEmpleados);
 
 //Agregar imagen
-enrutador.post('/subir-imagenEmpleado/:id', multiPartyMiddleware, EmpleadoController.cargarImagen);
+enrutador.post('/subir-imagenEmpleado/:id', multiPartyMiddleware, EmpleadoController.cargarImagenEmpleado);
 
 //Cargar las imagenes
-enrutador.get('/tener-imagenEmpleado/:imagen' , EmpleadoController.tenerImagen);
+enrutador.get('/tener-imagenEmpleado/:imagen' , EmpleadoController.tenerImagenEmpleado);
 
 module.exports = enrutador;

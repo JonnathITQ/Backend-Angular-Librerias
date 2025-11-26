@@ -137,7 +137,7 @@ var controller = {
                 });
             }
         } else {
-            return res.status(400).send({message: 'No se subió ninguna imágen'});
+            return res.status(400).send({message: 'No se subió ninguna imagen'});
         }
     },
 

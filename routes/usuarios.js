@@ -1,37 +1,17 @@
 'use strict'
 
 var express = require('express');
-var UsuariosController = require('../Controller/usuariosController');
-
-var enrutador = express.Router();
-
+var router = express.Router();
+var usuariosController = require('../Controller/usuariosController');
 var multiparty = require('connect-multiparty');
-var multiPartyMiddleware = multiparty({uploadDir: './uploads'});
+var multiPartyMiddleware = multiparty({ uploadDir: './uploads' });
 
-//Endpoints
+router.get('/usuarios', usuariosController.verUsuarios);
+router.get('/usuario/:id', usuariosController.verUsuario);
+router.post('/guardar-usuarios', usuariosController.guardarUsuarios);
+router.put('/usuario/:id', usuariosController.actualizarUsuario);
+router.delete('/usuario/:id', usuariosController.deleteUsuarios);
+router.post('/cargar-imagenUsuario/:id', multiPartyMiddleware, usuariosController.cargarImagenUsuario);
+router.get('/tener-imagenUsuario/:imagen', usuariosController.tenerImagenUsuario);
 
-//Inicio
-enrutador.get('/testUsuario', UsuariosController.testUsuarios);
-
-//Ver todos los usuarios
-enrutador.get('/usuarios', UsuariosController.verUsuarios);
-
-//Ver usuario específico
-enrutador.get('/usuarios/:id', UsuariosController.verUsuario);
-
-//Guardar un usuario
-enrutador.post('/guardar-usuario', UsuariosController.guardarUsuarios);
-
-//Actualizar un usuario
-enrutador.put('/usuarios/:id', UsuariosController.actualizarUsuario);
-
-//Borrar un usuario
-enrutador.delete('/usuarios/:id', UsuariosController.deleteUsuarios);
-
-//Agregar imagen
-enrutador.post('/subir-imagenUsuario/:id', multiPartyMiddleware, UsuariosController.cargarImagen);
-
-//Cargar las imagenes
-enrutador.get('/tener-imagenUsuario/:imagen' , UsuariosController.tenerImagen);
-
-module.exports = enrutador;
+module.exports = router;
