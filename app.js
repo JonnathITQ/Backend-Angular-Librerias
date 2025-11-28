@@ -8,13 +8,14 @@ var app = express(); // app = módulo que se encarga de crear el servidor
 var libreria_routes = require('./routes/libreria'); // libreria_routes = módulo que se encarga de manejar las rutas de la librería
 var usuario_routes = require('./routes/usuarios'); // usuario_routes = módulo que se encarga de manejar las rutas de los usuarios
 var empleado_routes = require('./routes/empleado'); // empleado_routes = módulo que se encarga de manejar las rutas de los empleados
+var prestamos_routes = require('./routes/prestamos') // módulo que se encarga de manejar prestamos
 
 //3) Usamos el bodyParser para parsear el body de las peticiones
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //4) Usamos el app.use((req, res, next)=> { }) para manejar los headers de las peticiones
-app.use((req, res, next)=> { 
+app.use((req, res, next) => {
    res.header('Access-Control-Allow-Origin', '*');
    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -29,8 +30,9 @@ app.use('/', libreria_routes);
 app.use('/', usuario_routes);
 // empleado_routes = módulo que se encarga de manejar las rutas de los empleados
 app.use('/', empleado_routes);
-
+// módulo que se encarga de manejar prestamos
+app.use('/', prestamos_routes)
 
 
 //6) Exportamos el módulo app para que pueda ser usado en otras partes de la aplicación
-module.exports= app;
+module.exports = app;

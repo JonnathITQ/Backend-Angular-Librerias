@@ -53,7 +53,7 @@ var controller = {
         Libros.findById(libroId)
             .then(libro => {
                 if (!libro) return res.status(404).send({ message: 'El producto con esta ID no existe' })
-                return res.status(200).send({ libro })
+                return res.status(200).send({ libro });
             })
             .catch(err => {
                 if (err.name === 'CastError') {
@@ -63,15 +63,15 @@ var controller = {
             });
     },
 
-    borrarLibros:function(req,res){
+    borrarLibros: function (req, res) {
         var libroId = req.params.id
         Libros.findByIdAndDelete(libroId)
-        .then(libroRetirado=>{
-            if(!libroRetirado)
-                return res.status(400).send({message:'No se puede borrar un libro que no tenemos'});
-            return res.status(200).send({libro:libroRetirado, message:'Producto eliminado correctamente'});
-        })
-        .catch(err => {
+            .then(libroRetirado => {
+                if (!libroRetirado)
+                    return res.status(400).send({ message: 'No se puede borrar un libro que no tenemos' });
+                return res.status(200).send({ libro: libroRetirado, message: 'Producto eliminado correctamente' });
+            })
+            .catch(err => {
                 if (err.name === 'CastError') {
                     return res.status(404).send({ message: 'El ID no es válido o está incorrecto' });
                 }
@@ -79,17 +79,17 @@ var controller = {
             });
     },
 
-    actualizarLibros:function(req,res){
+    actualizarLibros: function (req, res) {
         var libroId = req.params.id
         var actualizar = req.body;
 
-        Libros.findByIdAndUpdate(libroId, actualizar, {new: true})
-        .then(libroActualizado=>{
-            if(!libroActualizado)
-                return res.status(404).send({message: 'El libro no existe, no se puede actualizar'});
-            return res.status(200).send({libro:libroActualizado});
-        })
-        .catch(err => {
+        Libros.findByIdAndUpdate(libroId, actualizar, { new: true })
+            .then(libroActualizado => {
+                if (!libroActualizado)
+                    return res.status(404).send({ message: 'El libro no existe, no se puede actualizar' });
+                return res.status(200).send({ libro: libroActualizado });
+            })
+            .catch(err => {
                 if (err.name === 'CastError') {
                     return res.status(404).send({ message: 'El ID no es válido o está incorrecto' });
                 }
@@ -97,56 +97,56 @@ var controller = {
             });
     },
 
-    cargarPortada:function(req,res){
+    cargarPortada: function (req, res) {
         var libroId = req.params.id;
-        var fileName= 'Imagen no subida'
+        var fileName = 'Imagen no subida'
 
-        if(req.files){
+        if (req.files) {
             var filePath = req.files.portada.path;
-            var file_split= filePath.split('\\');
+            var file_split = filePath.split('\\');
             var fileName = file_split[file_split.length - 1];
 
             var extSplit = fileName.split('\.');
             var fileExt = extSplit[extSplit.length - 1];
 
-            if(fileExt == 'png' || fileExt == 'jpg' || fileExt == 'jpeg' || fileExt == 'gif'){
-                Libros.findByIdAndUpdate(libroId, {portada:fileName}, {new: true})
-                .then(libroActualizado=>{
-                    if(!libroActualizado){
-                        fs.unlink(filePath, (unlinkErr)=>{
-                            return res.status(404).send({message: 'El producto no existe, no se subió la imagen'});
-                        });
+            if (fileExt == 'png' || fileExt == 'jpg' || fileExt == 'jpeg' || fileExt == 'gif') {
+                Libros.findByIdAndUpdate(libroId, { portada: fileName }, { new: true })
+                    .then(libroActualizado => {
+                        if (!libroActualizado) {
+                            fs.unlink(filePath, (unlinkErr) => {
+                                return res.status(404).send({ message: 'El producto no existe, no se subió la imagen' });
+                            });
 
-                    } else {
-                        return res.status(200).send({libro: libroActualizado});
-                    }
-                })
-                .catch(err=>{
-                    fs.unlink(filePath, (unlinkErr)=>{
-                        if (unlinkErr) console.error('Error al eliminar el archivo temporal', unlinkErr);
-                        if(err.name === 'CastError'){
-                            return res.status(404).send({message: 'Formato Id no válido para este campo'})
+                        } else {
+                            return res.status(200).send({ libro: libroActualizado });
                         }
-                        return res.status(500).send({message: 'Error al subir la imagen o actualizar'})
+                    })
+                    .catch(err => {
+                        fs.unlink(filePath, (unlinkErr) => {
+                            if (unlinkErr) console.error('Error al eliminar el archivo temporal', unlinkErr);
+                            if (err.name === 'CastError') {
+                                return res.status(404).send({ message: 'Formato Id no válido para este campo' })
+                            }
+                            return res.status(500).send({ message: 'Error al subir la imagen o actualizar' })
+                        });
                     });
-                });
             } else {
-                fs.unlink(filePath,(err)=>{
+                fs.unlink(filePath, (err) => {
                     if (err) console.error('Error al eliminar el archivo con ext no válida', err)
-                    return res.status(200).send({message: "La extensión no es válida, archivo eliminado"});
+                    return res.status(200).send({ message: "La extensión no es válida, archivo eliminado" });
                 });
             }
         } else {
-            return res.status(400).send({message: 'No se subió ninguna imagen'});
+            return res.status(400).send({ message: 'No se subió ninguna imagen' });
         }
     },
 
-    tenerPortada: function(req, res) {
+    tenerPortada: function (req, res) {
         var file = req.params.portada;
         //debes usar path.join y asegurarte de que la ruta sea relativa al archivo, no solo './uploads/'.
         var path_file = path.join(__dirname, '../uploads', file);
 
-        fs.stat(path_file, function(err, stats) {
+        fs.stat(path_file, function (err, stats) {
             if (!err && stats.isFile()) {
                 return res.sendFile(path.resolve(path_file));
             } else {
