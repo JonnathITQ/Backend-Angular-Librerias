@@ -3,6 +3,8 @@
 var Usuarios = require('../models/usuarios');
 var path = require('path');
 var fs = require('fs');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 var controller = {
 
@@ -36,15 +38,19 @@ var controller = {
             });
     },
 
-    guardarUsuarios: function (req, res) {
+    guardarUsuarios: async function (req, res) {
         var usuario = new Usuarios;
         var params = req.body;
 
         usuario.nombre = params.nombre;
         usuario.apellido = params.apellido;
         usuario.cedula = params.cedula;
-        usuario.correo = params.correo;
-        usuario.contrasenia = params.contrasenia;
+        usuario.correo = params.correo ? params.correo.trim().toLowerCase() : null;
+
+        if (params.contrasenia) {
+            usuario.contrasenia = await bcrypt.hash(params.contrasenia.trim(), 10);
+        }
+
         usuario.imagen = null;
 
         usuario.save()
@@ -133,7 +139,7 @@ var controller = {
         }
     },
 
-    tenerImagenUsuario: function (req,res) {
+    tenerImagenUsuario: function (req, res) {
         var file = req.params.imagen;
         var path_file = path.join(__dirname, '../uploads', file);
 
@@ -144,6 +150,71 @@ var controller = {
                 return res.status(404).send({ message: 'La imagen no existe' });
             }
         });
+    },
+
+    loginUsuario: async function (req, res) {
+        let { correo, contrasenia } = req.body;
+
+        try {
+            if (correo) correo = correo.trim().toLowerCase();
+            if (contrasenia) contrasenia = contrasenia.trim();
+
+            const usuario = await Usuarios.findOne({ correo });
+            if (!usuario) {
+                return res.status(400).send({ message: 'Correo no registrado' });
+            }
+
+            const passwordCorrecta = await bcrypt.compare(contrasenia, usuario.contrasenia);
+
+            if (!passwordCorrecta) {
+                return res.status(400).send({ message: 'Contraseña incorrecta' });
+            }
+
+            const token = jwt.sign(
+                {
+                    id: usuario._id,
+                    correo: usuario.correo,
+                    rol: 'usuario'
+                },
+                "adriel",
+                { expiresIn: "4h" }
+            );
+
+            return res.status(200).send({
+                message: "login exitoso",
+                token,
+                usuario
+            });
+
+        } catch (error) {
+            console.error("ERROR LOGIN USUARIO:", error);
+            return res.status(500).send({ message: "Error en login", error });
+        }
+    },
+
+    recuperarContrasenia: async function (req, res) {
+        let { correo, nuevaContrasenia } = req.body;
+
+        try {
+            if (correo) correo = correo.trim().toLowerCase();
+            if (nuevaContrasenia) nuevaContrasenia = nuevaContrasenia.trim();
+
+            const usuario = await Usuarios.findOne({ correo });
+            if (!usuario) {
+                return res.status(400).send({ message: 'Correo no registrado' });
+            }
+
+            const hash = await bcrypt.hash(nuevaContrasenia, 10);
+            usuario.contrasenia = hash;
+
+            await usuario.save();
+
+            return res.status(200).send({ message: 'Contraseña actualizada correctamente' });
+
+        } catch (error) {
+            console.error("ERROR RECUPERAR:", error);
+            return res.status(500).send({ message: "Error al recuperar contraseña", error });
+        }
     }
 }
 

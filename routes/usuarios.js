@@ -14,4 +14,7 @@ router.delete('/usuario/:id', usuariosController.deleteUsuarios);
 router.post('/cargar-imagenUsuario/:id', multiPartyMiddleware, usuariosController.cargarImagenUsuario);
 router.get('/tener-imagenUsuario/:imagen', usuariosController.tenerImagenUsuario);
 
+router.post('/login-usuario', usuariosController.loginUsuario);
+router.post('/recuperar-contrasenia', usuariosController.recuperarContrasenia);
+
 module.exports = router;

@@ -2,6 +2,8 @@
 var Empleados = require('../models/empleados');
 var path = require('path');
 var fs = require('fs');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 var controller = {
     home: function (req, res) {
@@ -39,9 +41,13 @@ var controller = {
             });
     },
 
-    guardarEmpleados: function (req, res) {
+    guardarEmpleados: async function (req, res) {
+        console.log("BODY RECIBIDO:", req.body);  // ← IMPORTANTE
+
         var empleado = new Empleados;
-        var params = req.body
+        var params = req.body;
+
+        console.log("CONTRASEÑA ORIGINAL:", params.contrasenia); // ← IMPORTANTE
 
         empleado.nombre = params.nombre;
         empleado.apellido = params.apellido;
@@ -49,19 +55,22 @@ var controller = {
         empleado.tipoSangre = params.tipoSangre;
         empleado.seguroMedico = params.seguroMedico;
         empleado.correo = params.correo;
-        empleado.contrasenia = params.contrasenia;
+
+        if (params.contrasenia) {
+            empleado.contrasenia = await bcrypt.hash(params.contrasenia, 10);
+        }
+
+        console.log("HASH GENERADO:", empleado.contrasenia); // ← IMPORTANTE
+
         empleado.rol = params.rol;
         empleado.imagen = null;
 
         empleado.save()
-            .then(empleadoGuardado => {
-                if (!empleadoGuardado) return res.status(404).send({ message: 'No se guardó el empleado' })
-                return res.status(200).send({ empleado: empleadoGuardado });
-            })
-            .catch(err => {
-                return res.status(500).send({ message: 'Error al guardar', error: err });
-            });
+            .then(empleadoGuardado => res.status(200).send({ empleado: empleadoGuardado }))
+            .catch(err => res.status(500).send({ message: 'Error al guardar', error: err }));
     },
+
+
 
     actualizarEmpleados: function (req, res) {
         var empleadosId = req.params.id;
@@ -150,7 +159,49 @@ var controller = {
                 return res.status(404).send({ message: 'La imagen no existe' });
             }
         });
+    },
+
+    loginEmpleado: async function (req, res) {
+        const { correo, contrasenia } = req.body;
+
+        try {
+            // Buscar empleado por correo
+            const empleado = await Empleados.findOne({ correo });
+            if (!empleado) {
+                return res.status(400).send({ message: 'Correo no registrado' });
+            }
+
+            // Comparar contraseñas (texto plano vs hash)
+            const passwordCorrecta = await bcrypt.compare(contrasenia, empleado.contrasenia);
+
+            if (!passwordCorrecta) {
+                return res.status(400).send({ message: 'Contraseña incorrecta' });
+            }
+
+            // Generar token JWT
+            const token = jwt.sign(
+                {
+                    id: empleado._id,
+                    correo: empleado.correo,
+                    rol: empleado.rol
+                },
+                "adriel",
+                { expiresIn: "4h" }
+            );
+
+            return res.status(200).send({
+                message: "login exitoso",
+                token,
+                empleado
+            });
+
+        } catch (error) {
+            console.error("ERROR LOGIN:", error);
+            return res.status(500).send({ message: "Error en login", error });
+        }
     }
+
+
 }
 
 module.exports = controller;
