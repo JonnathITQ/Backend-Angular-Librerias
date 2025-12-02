@@ -32,7 +32,7 @@ enrutador.put('/empleados/:id', auth, EmpleadoController.actualizarEmpleados);
 enrutador.delete('/empleados/:id', auth, EmpleadoController.deleteEmpleados);
 
 //Agregar imagen
-enrutador.post('/subir-imagenEmpleado/:id', auth, multiPartyMiddleware, EmpleadoController.cargarImagenEmpleado);
+enrutador.post('/subir-imagenEmpleado/:id', multiPartyMiddleware, EmpleadoController.cargarImagenEmpleado);
 
 //Cargar las imagenes
 enrutador.get('/tener-imagenEmpleado/:imagen', EmpleadoController.tenerImagenEmpleado);

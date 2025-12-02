@@ -143,7 +143,7 @@ var controller = {
 
     tenerPortada: function (req, res) {
         var file = req.params.portada;
-        //debes usar path.join y asegurarte de que la ruta sea relativa al archivo, no solo './uploads/'.
+        //Se debe usar path.join y asegurarte de que la ruta sea relativa al archivo, no solo './uploads/'.
         var path_file = path.join(__dirname, '../uploads', file);
 
         fs.stat(path_file, function (err, stats) {
