@@ -19,6 +19,8 @@ enrutador.get('/home-empleado', EmpleadoController.home);
 //Ver todos los empleados
 enrutador.get('/empleados', auth, EmpleadoController.verEmpleados);
 
+enrutador.get('/admins', auth, EmpleadoController.verAdmin);
+
 //Ver empleado específico
 enrutador.get('/empleados/:id', auth, EmpleadoController.verEmpleado);
 

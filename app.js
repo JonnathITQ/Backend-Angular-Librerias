@@ -8,7 +8,9 @@ var app = express(); // app = módulo que se encarga de crear el servidor
 var libreria_routes = require('./routes/libreria'); // libreria_routes = módulo que se encarga de manejar las rutas de la librería
 var usuario_routes = require('./routes/usuarios'); // usuario_routes = módulo que se encarga de manejar las rutas de los usuarios
 var empleado_routes = require('./routes/empleado'); // empleado_routes = módulo que se encarga de manejar las rutas de los empleados
-var prestamos_routes = require('./routes/prestamos') // módulo que se encarga de manejar prestamos
+var prestamos_routes = require('./routes/prestamos'); // módulo que se encarga de manejar prestamos
+var log_routes = require('./routes/logs');
+var est_routes = require('./routes/estadistica');
 
 //3) Usamos el bodyParser para parsear el body de las peticiones
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -31,8 +33,11 @@ app.use('/', usuario_routes);
 // empleado_routes = módulo que se encarga de manejar las rutas de los empleados
 app.use('/', empleado_routes);
 // módulo que se encarga de manejar prestamos
-app.use('/', prestamos_routes)
+app.use('/', prestamos_routes);
+// módulo que se encarga de manejar logs
+app.use('/', log_routes);
 
+app.use('/', est_routes);
 
 //6) Exportamos el módulo app para que pueda ser usado en otras partes de la aplicación
 module.exports = app;

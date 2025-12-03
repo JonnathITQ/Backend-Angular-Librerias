@@ -11,9 +11,21 @@ var controller = {
             "<h1> PRUEBA COMPLETADA, EMPLEADOS FUNCIONA"
         )
     },
-
+    //Solo para poder buscar los admins, al solo tener una coleccion. 
+    verAdmin: function (req, res) {
+        Empleados.find({rol:'admin'}).sort().exec()
+            .then(empleado => {
+                if (!empleado || empleado.length === 0)
+                    return res.status(404).send({ message: 'No se encontaron administradores' })
+                return res.status(200).send({ empleado })
+            })
+            .catch(err => {
+                return res.status(500).send({ message: 'Error al obtener datos', error: err });
+            });
+    },
+    //Se modifico la busqueda, se coloco que solo debe aparecer si el rol es admin, caso contrario no traer
     verEmpleados: function (req, res) {
-        Empleados.find({}).sort().exec()
+        Empleados.find({rol: {$ne:'admin'}}).sort().exec()
             .then(empleado => {
                 if (!empleado || empleado.length === 0)
                     return res.status(404).send({ message: 'No se encontaron empleados' })
