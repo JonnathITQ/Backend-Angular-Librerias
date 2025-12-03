@@ -1,8 +1,9 @@
 'use strict'
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var mongoose = require('mongoose'); //traemos a mongoose a la variable
+var Schema = mongoose.Schema; //Creamos la variable para poder crear esquemas
 
-var EmpleadoSchema = Schema({
+var EmpleadoSchema = Schema({ //Creamos el modelo empleado
+    //Atributos: tipo de dato
     nombre: String,
     apellido: String,
     cedula: Number,
@@ -14,4 +15,5 @@ var EmpleadoSchema = Schema({
     imagen: String
 });
 
-module.exports= mongoose.model('Empleados', EmpleadoSchema)
+//Exportamos el módulo haciendo referencia al modelo "Empleados" y que el esquema pueda ser visible
+module.exports = mongoose.model('Empleados', EmpleadoSchema)

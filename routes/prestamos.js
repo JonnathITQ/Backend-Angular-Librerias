@@ -1,8 +1,8 @@
 'use strict'
 
-var express = require('express');
-var PrestamosController = require('../Controller/prestamosController');
-var enrutador = express.Router();
+var express = require('express');//Traemos express
+var PrestamosController = require('../Controller/prestamosController'); //Referenciamos al controlador
+var enrutador = express.Router(); //Colocamos el router para poder manejar entre rutas
 
 
 //Endpoints
