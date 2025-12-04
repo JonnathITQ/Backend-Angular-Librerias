@@ -9,6 +9,7 @@ var libreria_routes = require('./routes/libreria'); // libreria_routes = módulo
 var usuario_routes = require('./routes/usuarios'); // usuario_routes = módulo que se encarga de manejar las rutas de los usuarios
 var empleado_routes = require('./routes/empleado'); // empleado_routes = módulo que se encarga de manejar las rutas de los empleados
 var prestamos_routes = require('./routes/prestamos') // módulo que se encarga de manejar prestamos
+var tickets_routes = require('./routes/ticketsRoutes'); //módulo de tickets
 
 //3) Usamos el bodyParser para parsear el body de las peticiones
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -32,6 +33,8 @@ app.use('/', usuario_routes);
 app.use('/', empleado_routes);
 // módulo que se encarga de manejar prestamos
 app.use('/', prestamos_routes)
+// módulo que se encarga de manejar tickets
+app.use('/', tickets_routes);
 
 
 //6) Exportamos el módulo app para que pueda ser usado en otras partes de la aplicación
