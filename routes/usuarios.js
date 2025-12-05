@@ -5,6 +5,7 @@ var router = express.Router();
 var usuariosController = require('../Controller/usuariosController');
 var multiparty = require('connect-multiparty');
 var multiPartyMiddleware = multiparty({ uploadDir: './uploads' });
+var auth = require('../middlewares/auth');
 
 //Lista de usuarios
 router.get('/usuarios', usuariosController.verUsuarios);

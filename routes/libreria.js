@@ -2,6 +2,7 @@
 
 var express = require('express'); //Traemos el express
 var LibrosController = require('../Controller/librosController'); //Referencia al controlador
+var HistorialController = require('../Controller/historialController');
 
 var enrutador = express.Router(); //Traemos el router
 
@@ -34,8 +35,8 @@ enrutador.post('/subir-portada/:id', multiPartMiddleware, LibrosController.carga
 //Cargar las imagenes
 enrutador.get('/tener-portada/:portada', LibrosController.tenerPortada);
 
+// Rutas de Historial
+enrutador.post('/historial', HistorialController.agregarHistorial);
+enrutador.get('/historial/:idUsuario', HistorialController.verHistorialUsuario);
+
 module.exports = enrutador;
-
-
-
-
