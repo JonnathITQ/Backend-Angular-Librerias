@@ -37,9 +37,9 @@ app.use('/', empleado_routes);
 app.use('/', prestamos_routes);
 // módulo que se encarga de manejar logs
 app.use('/', log_routes);
-
+// módulo que se encarga de manera las estadisticas
 app.use('/', est_routes);
-
+// módulo que se encarga de manera los tickest
 app.use('/', tickets_routes);
 
 //6) Exportamos el módulo app para que pueda ser usado en otras partes de la aplicación

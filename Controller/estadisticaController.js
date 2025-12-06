@@ -1,24 +1,26 @@
 'use strict';
-const libros = require('../models/libros');
 var Usuario = require('../models/usuarios');
 
 var controller = {
 
-    estadisticaLibrospapa: async function (req, res) {
-        try {
-            // Traemos todos los usuarios a travez del sort
-            var usuarios = await Usuario.find({}).sort('apellido');
+    estadisticaLibrospapa: function (req, res) {
+    Usuario.find({}).sort().exec()
+        .then(usuarios => {
+            if (!usuarios || usuarios.length === 0) {
+                return res.status(404).send({ message: 'No hay usuarios que mostrar' });
+            }
 
-            // Cantidad total de usuarios
             var total = usuarios.length;
 
-            return res.status(200).send({totalUsuarios: total,usuarios: usuarios});
-
-        } catch (err) {
+            return res.status(200).send({totalUsuarios: total});
+        })
+        .catch(err => {
             return res.status(500).send({
-                message: 'Error al obtener estadísticas de usuarios'});
-        }
-    },
+                message: 'Error al obtener los datos',
+                error: err
+            });
+        });
+},
 
     librosFavoritos: async function (req, res) {
         //Uso de aggregate para el obtener el id del libro favortio y luego indicar cuantas veces aparece cada uno
