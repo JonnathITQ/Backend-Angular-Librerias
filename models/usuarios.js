@@ -8,7 +8,10 @@ var UsuariosSchema = Schema({
     cedula: String,
     correo: String,
     contrasenia: String,
+    libros_favorito: [{ type: Schema.Types.ObjectId, ref: 'Libros' }],
+    historial: [{ type: Schema.Types.ObjectId, ref: 'Libros' }],
     imagen: String
+
 });
 
 module.exports = mongoose.model('Usuarios', UsuariosSchema)

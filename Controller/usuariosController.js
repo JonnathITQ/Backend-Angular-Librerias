@@ -11,7 +11,7 @@ var controller = {
     home: (req, res) => res.status(200).send("<h1>Home Empleado</h1>"),
 
     verUsuarios: function (req, res) {
-        Usuarios.find({}).sort().exec()
+        Usuarios.find().populate('libros_favorito').populate('historial').sort().exec()
             .then(usuario => {
                 if (!usuario || usuario.length === 0)
                     return res.status(404).send({ message: 'No se encontaron usuarios' })
@@ -25,7 +25,7 @@ var controller = {
     verUsuario: function (req, res) {
         var usuarioId = req.params.id;
 
-        Usuarios.findById(usuarioId)
+        Usuarios.findById(usuarioId).populate('libros_favorito').populate('historial')
             .then(usuario => {
                 if (!usuario) return res.status(404).send({ message: 'El usuario con esta ID no existe' })
                 return res.status(200).send({ usuario })
@@ -51,23 +51,36 @@ var controller = {
             usuario.contrasenia = await bcrypt.hash(params.contrasenia.trim(), 10);
         }
 
+        usuario.libros_favorito = params.libros_favorito || [];
+        usuario.historial = [];
         usuario.imagen = null;
 
         usuario.save()
             .then(usuarioGuardado => {
                 if (!usuarioGuardado) return res.status(404).send({ message: 'No se ha guardado el usuario' })
-                return res.status(200).send({ usuario: usuarioGuardado });
+                return Usuarios.findById(usuarioGuardado._id)
+                    .populate('libros_favorito')
+                    .populate('historial')
+                    .then(usuarioCompleto => {
+                        return res.status(200).send({ usuario: usuarioCompleto });
+                    })
             })
             .catch(err => {
                 return res.status(500).send({ message: 'Error al guardar', error: err });
             });
     },
 
-    actualizarUsuario: function (req, res) {
+    actualizarUsuario: async function (req, res) {
         var usuariosId = req.params.id
         var actualizar = req.body;
 
+        if (actualizar.contrasenia) {
+            actualizar.contrasenia = await bcrypt.hash(actualizar.contrasenia.trim(), 10);
+        }
+
         Usuarios.findByIdAndUpdate(usuariosId, actualizar, { new: true })
+            .populate('libros_favorito')
+            .populate('historial')
             .then(usuarioActualizado => {
                 if (!usuarioActualizado) return res.status(404).send({ message: 'El usuario no existe, no se podrá actualizar' })
                 return res.status(200).send({ usuario: usuarioActualizado });
@@ -82,7 +95,7 @@ var controller = {
 
     deleteUsuarios: function (req, res) {
         var usuarioId = req.params.id;
-        Usuarios.findByIdAndDelete(usuarioId)
+        Usuarios.findByIdAndDelete(usuarioId).populate('libros_favorito')
             .then(usuarioEliminado => {
                 if (!usuarioEliminado) return res.status(400).send({ message: 'no se puede eliminar un usuario que no existe' });
                 return res.status(200).send({ usuario: usuarioEliminado, message: 'Usuario eliminado con satisfacción' })
@@ -159,7 +172,7 @@ var controller = {
             if (correo) correo = correo.trim().toLowerCase();
             if (contrasenia) contrasenia = contrasenia.trim();
 
-            const usuario = await Usuarios.findOne({ correo });
+            const usuario = await Usuarios.findOne({ correo }).populate('libros_favorito').populate('historial');
             if (!usuario) {
                 return res.status(400).send({ message: 'Correo no registrado' });
             }

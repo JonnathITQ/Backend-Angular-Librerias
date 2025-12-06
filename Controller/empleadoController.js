@@ -11,6 +11,8 @@ var controller = {
             "<h1> PRUEBA COMPLETADA, EMPLEADOS FUNCIONA"
         )
     },
+
+    //metodos
     //Solo para poder buscar los admins, al solo tener una coleccion. 
     verAdmin: function (req, res) {
         Empleados.find({rol:'admin'}).sort().exec()

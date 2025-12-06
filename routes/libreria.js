@@ -1,12 +1,13 @@
 'use strict'
 
-var express = require('express');
-var LibrosController = require('../Controller/librosController');
+var express = require('express'); //Traemos el express
+var LibrosController = require('../Controller/librosController'); //Referencia al controlador
+var HistorialController = require('../Controller/historialController');
 
-var enrutador = express.Router();
+var enrutador = express.Router(); //Traemos el router
 
-var multipart = require('connect-multiparty');
-var multiPartMiddleware = multipart({ uploadDir: './uploads' });
+var multipart = require('connect-multiparty'); //traemos el multiparty
+var multiPartMiddleware = multipart({ uploadDir: './uploads' }); //Aplicamos el middleware para la carpeta de uploads
 
 //Endpoints
 
@@ -34,8 +35,12 @@ enrutador.post('/subir-portada/:id', multiPartMiddleware, LibrosController.carga
 //Cargar las imagenes
 enrutador.get('/tener-portada/:portada', LibrosController.tenerPortada);
 
-module.exports = enrutador;
+// Rutas de Historial
+enrutador.post('/historial', HistorialController.agregarHistorial);
 
+enrutador.get('/historial/:idUsuario', HistorialController.verHistorialUsuario);
+
+module.exports = enrutador;
 
 
 
